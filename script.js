@@ -28,11 +28,28 @@ $(document).ready(function() {
     ];
 
     var currentQuestionIndex = 0; // Initialize index to 0
+    var timerSeconds = 30;
+    var timerInterval;
 
     $("#startQuiz").on("click", function() {
         $("#content").empty();
+        startTimer();
         displayQuestion(currentQuestionIndex); // Display the first question
     });
+
+    function startTimer() {
+        timerInterval = setInterval(function() {
+            $("#timer").text("Time: " + timerSeconds + "s");
+            timerSeconds--;
+
+            if (timerSeconds < 0) {
+                clearInterval(timerInterval);
+                endQuiz();
+            }
+        }, 1000);
+    }
+
+
 
     function displayQuestion(index) {
         var currentQuestion = questions[index];
@@ -51,12 +68,19 @@ $(document).ready(function() {
     }
 
     function checkAnswer(selectedOption, correctAnswer) {
+        //add some way to check on the answers to decrease time
+
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
             $("#content").empty();
             displayQuestion(currentQuestionIndex);
         } else {
-            $("#content").html("<h2>Quiz completed!</h2>");
+            endQuiz();
         }
+    }
+
+    function endQuiz() {
+        clearInterval(timerInterval);
+        $("#content").html("<h2>Quiz completed!</h2>");
     }
 });
