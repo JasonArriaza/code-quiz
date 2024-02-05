@@ -51,8 +51,6 @@ $(document).ready(function () {
         highScores.sort(function (a, b) {
             return b.score - a.score;
         });
-
-        // Display high scores in a table or any format you prefer
         var highScoresTable = $("<table>").append("<tr><th>Initials</th><th>Score</th></tr>");
 
         for (var i = 0; i < highScores.length; i++) {
@@ -87,7 +85,6 @@ $(document).ready(function () {
         var currentQuestion = questions[index];
         var questionDiv = $("<div>").html("<h4>" + currentQuestion.question + "</h4>");
 
-        // create buttons for each option
         for (var i = 0; i < currentQuestion.options.length; i++) {
             var optionButton = $("<button>").text(currentQuestion.options[i]);
             optionButton.on("click", function () {
