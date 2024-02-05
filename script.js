@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     var questions = [
         {
             question: "What is the styling language that you first learn in web development?",
@@ -27,18 +27,23 @@ $(document).ready(function() {
         },
     ];
 
-    var currentQuestionIndex = 0; // Initialize index to 0
+    function endQuiz() {
+        clearInterval(timerInterval);
+        $("#content").html("<h2>Quiz completed!</h2>");
+    }
+
+    var currentQuestionIndex = 0;
     var timerSeconds = 30;
     var timerInterval;
 
-    $("#startQuiz").on("click", function() {
+    $("#startQuiz").on("click", function () {
         $("#content").empty();
         startTimer();
-        displayQuestion(currentQuestionIndex); // Display the first question
+        displayQuestion(currentQuestionIndex);
     });
 
     function startTimer() {
-        timerInterval = setInterval(function() {
+        timerInterval = setInterval(function () {
             $("#timer").text("Time: " + timerSeconds + "s");
             timerSeconds--;
 
@@ -58,7 +63,7 @@ $(document).ready(function() {
         // create buttons for each option
         for (var i = 0; i < currentQuestion.options.length; i++) {
             var optionButton = $("<button>").text(currentQuestion.options[i]);
-            optionButton.on("click", function() {
+            optionButton.on("click", function () {
                 checkAnswer($(this).text(), currentQuestion.correctAnswer);
             });
             questionDiv.append(optionButton);
@@ -68,19 +73,34 @@ $(document).ready(function() {
     }
 
     function checkAnswer(selectedOption, correctAnswer) {
-        //add some way to check on the answers to decrease time
-
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-            $("#content").empty();
-            displayQuestion(currentQuestionIndex);
+        if (selectedOption === correctAnswer) {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                $("#content").empty();
+                displayQuestion(currentQuestionIndex);
+            } else {
+                endQuiz();
+            }
         } else {
-            endQuiz();
+            timerSeconds -= 5;
+
+            // make sure the timer doesnt go below zero
+            timerSeconds = Math.max(0, timerSeconds);
+
+            // Check if the timer is still valid
+            if (timerSeconds > 0) {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    $("#content").empty();
+                    displayQuestion(currentQuestionIndex);
+                } else {
+                    endQuiz();
+                }
+            } else {
+                endQuiz();
+            }
         }
+
     }
 
-    function endQuiz() {
-        clearInterval(timerInterval);
-        $("#content").html("<h2>Quiz completed!</h2>");
-    }
 });
