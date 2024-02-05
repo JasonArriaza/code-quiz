@@ -27,14 +27,39 @@ $(document).ready(function () {
         },
     ];
 
-    function endQuiz() {
-        clearInterval(timerInterval);
-        $("#content").html("<h2>Quiz completed!</h2>");
-    }
-
     var currentQuestionIndex = 0;
     var timerSeconds = 30;
     var timerInterval;
+    var userScore = 0;
+    var highScores = [];
+
+    function endQuiz() {
+        clearInterval(timerInterval);
+        $("#content").html("<h2>Quiz completed!</h2>");
+
+        var userInitials = prompt("Enter your initials:");
+        var userEntry = { initials: userInitials, score: userScore };
+        highScores.push(userEntry);
+
+        // Display high scores
+        displayHighScores();
+
+    }
+
+    function displayHighScores() {
+        // Sort high scores in descending order
+        highScores.sort(function (a, b) {
+            return b.score - a.score;
+        });
+        var highScoresTable = $("<table>").append("<tr><th>Initials</th><th>Score</th></tr>");
+
+        for (var i = 0; i < highScores.length; i++) {
+            highScoresTable.append("<tr><td>" + highScores[i].initials + "</td><td>" + highScores[i].score + "</td></tr>");
+        }
+
+        $("#content").append(highScoresTable);
+    }
+
 
     $("#startQuiz").on("click", function () {
         $("#content").empty();
@@ -60,7 +85,6 @@ $(document).ready(function () {
         var currentQuestion = questions[index];
         var questionDiv = $("<div>").html("<h4>" + currentQuestion.question + "</h4>");
 
-        // create buttons for each option
         for (var i = 0; i < currentQuestion.options.length; i++) {
             var optionButton = $("<button>").text(currentQuestion.options[i]);
             optionButton.on("click", function () {
@@ -74,6 +98,7 @@ $(document).ready(function () {
 
     function checkAnswer(selectedOption, correctAnswer) {
         if (selectedOption === correctAnswer) {
+            userScore++;
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
                 $("#content").empty();
